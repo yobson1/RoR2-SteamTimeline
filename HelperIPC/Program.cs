@@ -9,98 +9,91 @@ using System.Linq;
 
 namespace HelperIPC;
 
-public class SteamHelper
-{
-    private const uint APP_ID = 632360;
+public class SteamHelper {
+	private const uint APP_ID = 632360;
 
-    static void Main(string[] args)
-    {
-        SteamClient.Init(APP_ID);
+	static void Main(string[] args) {
+		SteamClient.Init(APP_ID);
 
-        while (true)
-        {
-            try
-            {
-                if (!Process.GetProcessesByName("Risk of Rain 2").Any())
-                    break;
+		while (true) {
+			try {
+				if (!Process.GetProcessesByName("Risk of Rain 2").Any()) {
+					break;
+				}
 
-                using NamedPipeServerStream pipeServer = new("SteamworksPipe");
-                Console.WriteLine("Waiting for connection...");
-                pipeServer.WaitForConnection();
+				using NamedPipeServerStream pipeServer = new("SteamworksPipe");
+				Console.WriteLine("Waiting for connection...");
+				pipeServer.WaitForConnection();
 
-                Console.WriteLine("Connected. Waiting for commands...");
+				Console.WriteLine("Connected. Waiting for commands...");
 
-                using MemoryStream ms = new MemoryStream();
+				using MemoryStream ms = new MemoryStream();
 
-                // Read the incoming data into a byte array
-                pipeServer.CopyTo(ms);
-                byte[] receivedData = ms.ToArray();
+				// Read the incoming data into a byte array
+				pipeServer.CopyTo(ms);
+				byte[] receivedData = ms.ToArray();
 
-                // Check if the received data is valid
-                if (receivedData.Length == 0)
-                    continue;
+				// Check if the received data is valid
+				if (receivedData.Length == 0) {
+					continue;
+				}
 
-                Console.WriteLine("Processing command");
+				Console.WriteLine("Processing command");
 
-                // Deserialize the data using JSON
-                string jsonReceived = System.Text.Encoding.UTF8.GetString(receivedData);
-                SteamTimelineCommand command = JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
+				// Deserialize the data using JSON
+				string jsonReceived = System.Text.Encoding.UTF8.GetString(receivedData);
+				SteamTimelineCommand command = JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
 
-                if (command.Function == "Stop")
-                    break;
+				if (command.Function == "Stop") {
+					break;
+				}
 
-                // Call the appropriate function based on the command
-                ExecuteCommand(command);
+				// Call the appropriate function based on the command
+				ExecuteCommand(command);
 
-                ms.SetLength(0); // Clear the MemoryStream for reuse
-            }
-            catch (IOException)
-            {
-                // Handle the error: the client disconnected
-                Console.WriteLine("Client disconnected. Waiting for a new connection...");
-            }
-            catch (Exception ex)
-            {
-                // Handle other potential exceptions
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-        }
+				ms.SetLength(0); // Clear the MemoryStream for reuse
+			} catch (IOException) {
+				// Handle the error: the client disconnected
+				Console.WriteLine("Client disconnected. Waiting for a new connection...");
+			} catch (Exception ex) {
+				// Handle other potential exceptions
+				Console.WriteLine($"An error occurred: {ex.Message}");
+			}
+		}
 
-        SteamClient.Shutdown();
-    }
+		SteamClient.Shutdown();
+	}
 
-    static void ExecuteCommand(SteamTimelineCommand command)
-    {
-        Console.WriteLine($"Received command: {command.Function} with arguments: {string.Join(", ", command.Arguments)}");
+	static void ExecuteCommand(SteamTimelineCommand command) {
+		Console.WriteLine($"Received command: {command.Function} with arguments: {string.Join(", ", command.Arguments)}");
 
-        switch (command.Function)
-        {
-            case "SetTimelineStateDescription":
-                SteamTimeline.SetTimelineStateDescription(
-                    (string)command.Arguments[0],
-                    (float)(double)command.Arguments[1]
-                );
-                break;
+		switch (command.Function) {
+			case "SetTimelineStateDescription":
+				SteamTimeline.SetTimelineStateDescription(
+					(string)command.Arguments[0],
+					(float)(double)command.Arguments[1]
+				);
+				break;
 
-            case "ClearTimelineStateDescription":
-                SteamTimeline.ClearTimelineStateDescription((float)(double)command.Arguments[0]);
-                break;
+			case "ClearTimelineStateDescription":
+				SteamTimeline.ClearTimelineStateDescription((float)(double)command.Arguments[0]);
+				break;
 
-            case "AddTimelineEvent":
-                SteamTimeline.AddTimelineEvent(
-                    (string)command.Arguments[0],
-                    (string)command.Arguments[1],
-                    (string)command.Arguments[2],
-                    (uint)(long)command.Arguments[3],
-                    (float)(double)command.Arguments[4],
-                    (float)(double)command.Arguments[5],
-                    (TimelineEventClipPriority)(int)(long)command.Arguments[6]
-                );
-                break;
+			case "AddTimelineEvent":
+				SteamTimeline.AddTimelineEvent(
+					(string)command.Arguments[0],
+					(string)command.Arguments[1],
+					(string)command.Arguments[2],
+					(uint)(long)command.Arguments[3],
+					(float)(double)command.Arguments[4],
+					(float)(double)command.Arguments[5],
+					(TimelineEventClipPriority)(int)(long)command.Arguments[6]
+				);
+				break;
 
-            case "SetTimelineGameMode":
-                SteamTimeline.SetTimelineGameMode((TimelineGameMode)(int)(long)command.Arguments[0]);
-                break;
-        }
-    }
+			case "SetTimelineGameMode":
+				SteamTimeline.SetTimelineGameMode((TimelineGameMode)(int)(long)command.Arguments[0]);
+				break;
+		}
+	}
 }

@@ -2,9 +2,8 @@
 
 namespace SteamTimelineShared;
 
-public struct SteamTimelineCommand
-{
-    public string Function { get; set; }
+public struct SteamTimelineCommand {
+	public string Function { get; set; }
 
-    public object[] Arguments { get; set; }
+	public object[] Arguments { get; set; }
 }
