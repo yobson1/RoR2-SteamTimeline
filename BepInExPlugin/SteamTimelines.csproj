@@ -31,7 +31,7 @@
     <PackageReference Include="MMHOOK.RoR2" Version="2024.9.18" NoWarn="NU1701" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Reference Include="Facepunch.Steamworks" Version="2.3.4.0">
-      <HintPath>../lib/Facepunch.Steamworks.Win64.netstandard2.1.dll</HintPath>
+      <HintPath>../lib/$(TargetFramework)/Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -50,7 +50,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
     <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll&quot; &quot;$(ModPath)$(AssemblyName).dll&quot;" />
-    <Exec Command="copy /y &quot;..\lib\Facepunch.Steamworks.Win64.$(TargetFramework).dll&quot; &quot;$(ModPath)Facepunch.Steamworks.Win64.dll&quot;" />
+    <Exec Command="copy /y &quot;..\lib\$(TargetFramework)\Facepunch.Steamworks.Win64.dll&quot; &quot;$(ModPath)Facepunch.Steamworks.Win64.dll&quot;" />
     <Exec Command="copy /y &quot;..\SteamTimelineShared\bin\$(Configuration)\$(TargetFramework)\SteamTimelineShared.dll&quot; &quot;$(ModPath)SteamTimelineShared.dll&quot;" />
   </Target>
 </Project>
