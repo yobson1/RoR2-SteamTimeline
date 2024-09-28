@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTimelines", "BepInExPlugin\SteamTimelines.csproj", "{B40E8047-8888-4657-AA17-1C185312FA28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelperIPC", "HelperIPC\HelperIPC.csproj", "{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTimelineShared", "SteamTimelineShared\SteamTimelineShared.csproj", "{A63ED957-562E-4340-8F00-9FFE1D73EA3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B40E8047-8888-4657-AA17-1C185312FA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40E8047-8888-4657-AA17-1C185312FA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40E8047-8888-4657-AA17-1C185312FA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40E8047-8888-4657-AA17-1C185312FA28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63ED957-562E-4340-8F00-9FFE1D73EA3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63ED957-562E-4340-8F00-9FFE1D73EA3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63ED957-562E-4340-8F00-9FFE1D73EA3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63ED957-562E-4340-8F00-9FFE1D73EA3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+		{B40E8047-8888-4657-AA17-1C185312FA28} = {A63ED957-562E-4340-8F00-9FFE1D73EA3B} # SteamTimelines depends on SteamTimelineShared
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE} = {A63ED957-562E-4340-8F00-9FFE1D73EA3B} # HelperIPC depends on SteamTimelineShared
+		{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE} = {B40E8047-8888-4657-AA17-1C185312FA28} # HelperIPC depends on SteamTimelines
+	EndGlobalSection
+EndGlobal

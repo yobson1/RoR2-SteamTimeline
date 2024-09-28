@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- The R2modman profile to install the built mod to -->
+    <ProfileName>Dev</ProfileName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Product>SteamTimelines</Product>
+    <Version>1.0.0</Version>
+    <Authors>yobson</Authors>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Reference Include="Facepunch.Steamworks" Version="2.3.4.0">
+      <HintPath>../lib/Facepunch.Steamworks.Win64.net6.0.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ModPath>%AppData%\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist $(ModPath)Helper mkdir $(ModPath)Helper" />
+    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).exe&quot; &quot;$(ModPath)Helper\$(AssemblyName).exe&quot;" />
+    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll&quot; &quot;$(ModPath)Helper\$(AssemblyName).dll&quot;" />
+    <Exec Command="copy /y &quot;..\lib\steam_api64.dll&quot; &quot;$(ModPath)Helper\steam_api64.dll&quot;" />
+    <Exec Command="copy /y &quot;..\lib\Facepunch.Steamworks.Win64.$(TargetFramework).dll&quot; &quot;$(ModPath)Helper\Facepunch.Steamworks.Win64.dll&quot;" />
+    <Exec Command="copy /y &quot;..\SteamTimelineShared\bin\$(Configuration)\$(TargetFramework)\SteamTimelineShared.dll&quot; &quot;$(ModPath)Helper\SteamTimelineShared.dll&quot;" />
+  </Target>
+</Project>

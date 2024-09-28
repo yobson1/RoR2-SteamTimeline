@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- The R2modman profile to install the built mod to -->
+    <ProfileName>Dev</ProfileName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Product>SteamTimelines</Product>
+    <Version>1.0.0</Version>
+    <Authors>yobson</Authors>
+    <AssemblyName>$(Authors).$(Product)</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>SteamTimelines</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.2-r.1" />
+    <PackageReference Include="R2API" Version="5.0.*" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2024.9.18" NoWarn="NU1701" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Reference Include="Facepunch.Steamworks" Version="2.3.4.0">
+      <HintPath>../lib/Facepunch.Steamworks.Win64.netstandard2.1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ModPath>%AppData%\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
+    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll&quot; &quot;$(ModPath)$(AssemblyName).dll&quot;" />
+    <Exec Command="copy /y &quot;..\lib\Facepunch.Steamworks.Win64.$(TargetFramework).dll&quot; &quot;$(ModPath)Facepunch.Steamworks.Win64.dll&quot;" />
+    <Exec Command="copy /y &quot;..\SteamTimelineShared\bin\$(Configuration)\$(TargetFramework)\SteamTimelineShared.dll&quot; &quot;$(ModPath)SteamTimelineShared.dll&quot;" />
+  </Target>
+</Project>
