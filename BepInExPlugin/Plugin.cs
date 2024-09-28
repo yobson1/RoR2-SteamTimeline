@@ -6,6 +6,7 @@ using Steamworks;
 using SteamTimelineShared;
 using Newtonsoft.Json;
 using RoR2;
+using UnityEngine;
 
 namespace SteamTimelines;
 
@@ -204,6 +205,8 @@ public class Plugin : BaseUnityPlugin
             }
         };
         helperProcess.Start();
+        helperProcess.EnableRaisingEvents = true;
+        helperProcess.Exited += (s, e) => Application.Quit();
     }
 
     private void OnDestroy()
