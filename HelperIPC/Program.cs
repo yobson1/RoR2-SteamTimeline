@@ -42,7 +42,7 @@ public class SteamHelper
 
                 Console.WriteLine("Processing command");
 
-                // Deserialize the data using MessagePack
+                // Deserialize the data using JSON
                 string jsonReceived = System.Text.Encoding.UTF8.GetString(receivedData);
                 SteamTimelineCommand command = JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
 
