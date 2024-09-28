@@ -70,25 +70,25 @@ public class Plugin : BaseUnityPlugin
                 switch (runReport.gameEnding._cachedName)
                 {
                     case "MainEnding":
-                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated Mithrix!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
+                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated Mithrix!", 3, 0f, 0f, TimelineEventClipPriority.Featured);
                         break;
                     case "VoidEnding":
-                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated Voidling and survived the void!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
+                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated Voidling and survived the void!", 3, 0f, 0f, TimelineEventClipPriority.Featured);
                         break;
                     case "ObliterationEnding":
                         SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You obliterated at the Obelisk!", 3, 0f, 0f, TimelineEventClipPriority.None);
                         break;
                     case "RebirthEndingDef":
-                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated the False Son and were reborn!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
+                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated the False Son and were reborn!", 3, 0f, 0f, TimelineEventClipPriority.Featured);
                         break;
                     default:
-                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", $"You won!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
+                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", $"You won!", 3, 0f, 0f, TimelineEventClipPriority.Featured);
                         break;
                 }
             }
             else
             {
-                SendSteamTimelineCommand("AddTimelineEvent", "steam_x", "Run Lost", "You lost!", 3, 1f, 12f, TimelineEventClipPriority.Standard);
+                SendSteamTimelineCommand("AddTimelineEvent", "steam_x", "Run Lost", "You lost!", 1, 1f, 0f, TimelineEventClipPriority.Standard);
             }
             Logger.LogInfo($"gameEnding: {runReport.gameEnding._cachedName}");
         };
@@ -118,7 +118,7 @@ public class Plugin : BaseUnityPlugin
         On.RoR2.Run.OnServerBossDefeated += (orig, self, boss) =>
         {
             orig(self, boss);
-            SendSteamTimelineCommand("AddTimelineEvent", "steam_attack", "Boss Defeated", $"You defeated {boss.bestObservedName}!", 1, 0f, 12f, TimelineEventClipPriority.Standard);
+            SendSteamTimelineCommand("AddTimelineEvent", "steam_attack", "Boss Defeated", $"You defeated {boss.bestObservedName}!", 1, 0f, 0f, TimelineEventClipPriority.Standard);
         };
 
         // Track player death
@@ -129,9 +129,9 @@ public class Plugin : BaseUnityPlugin
             NetworkUser netUser = characterBody.master.playerCharacterMasterController.networkUser;
             if (!netUser) return;
             if (netUser.isLocalPlayer)
-                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", "You died", 2, 0f, 12f, TimelineEventClipPriority.Featured);
+                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", "You died", 2, 0f, 0f, TimelineEventClipPriority.Featured);
             else
-                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", $"{netUser.userName} died", 1, 0f, 12f, TimelineEventClipPriority.Standard);
+                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", $"{netUser.userName} died", 1, 0f, 0f, TimelineEventClipPriority.Featured);
         };
 
         // Track teleporter activation
