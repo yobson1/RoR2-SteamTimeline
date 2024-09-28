@@ -73,12 +73,12 @@ public class SteamHelper
             case "SetTimelineStateDescription":
                 SteamTimeline.SetTimelineStateDescription(
                     (string)command.Arguments[0],
-                    (float)command.Arguments[1]
+                    (float)(double)command.Arguments[1]
                 );
                 break;
 
             case "ClearTimelineStateDescription":
-                SteamTimeline.ClearTimelineStateDescription((float)command.Arguments[0]);
+                SteamTimeline.ClearTimelineStateDescription((float)(double)command.Arguments[0]);
                 break;
 
             case "AddTimelineEvent":
@@ -86,9 +86,9 @@ public class SteamHelper
                     (string)command.Arguments[0],
                     (string)command.Arguments[1],
                     (string)command.Arguments[2],
-                    (uint)command.Arguments[3],
-                    (float)command.Arguments[4],
-                    (float)command.Arguments[5],
+                    (uint)(long)command.Arguments[3],
+                    (float)(double)command.Arguments[4],
+                    (float)(double)command.Arguments[5],
                     (TimelineEventClipPriority)(int)(long)command.Arguments[6]
                 );
                 break;
