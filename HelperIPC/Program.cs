@@ -4,6 +4,8 @@ using System.IO.Pipes;
 using Newtonsoft.Json;
 using Steamworks;
 using SteamTimelineShared;
+using System.Diagnostics;
+using System.Linq;
 
 namespace HelperIPC;
 
@@ -19,6 +21,9 @@ public class SteamHelper
         {
             try
             {
+                if (!Process.GetProcessesByName("Risk of Rain 2").Any())
+                    break;
+
                 using NamedPipeServerStream pipeServer = new("SteamworksPipe");
                 Console.WriteLine("Waiting for connection...");
                 pipeServer.WaitForConnection();
