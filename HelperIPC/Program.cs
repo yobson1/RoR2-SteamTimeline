@@ -11,57 +11,66 @@ namespace HelperIPC;
 
 public class SteamHelper {
 	private const uint APP_ID = 632360;
+	private const string PIPE_NAME = "SteamworksPipe";
+	private const string PROCESS_NAME = "Risk of Rain 2";
 
 	static void Main(string[] args) {
-		SteamClient.Init(APP_ID);
+		try {
+			SteamClient.Init(APP_ID);
+			while (MainLoop()) { }
+		} finally {
+			// Ensure SteamClient is always shut down properly
+			SteamClient.Shutdown();
+		}
+	}
 
-		while (true) {
-			try {
-				if (!Process.GetProcessesByName("Risk of Rain 2").Any()) {
-					break;
-				}
-
-				using NamedPipeServerStream pipeServer = new("SteamworksPipe");
-				Console.WriteLine("Waiting for connection...");
-				pipeServer.WaitForConnection();
-
-				Console.WriteLine("Connected. Waiting for commands...");
-
-				using MemoryStream ms = new MemoryStream();
-
-				// Read the incoming data into a byte array
-				pipeServer.CopyTo(ms);
-				byte[] receivedData = ms.ToArray();
-
-				// Check if the received data is valid
-				if (receivedData.Length == 0) {
-					continue;
-				}
-
-				Console.WriteLine("Processing command");
-
-				// Deserialize the data using JSON
-				string jsonReceived = System.Text.Encoding.UTF8.GetString(receivedData);
-				SteamTimelineCommand command = JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
-
-				if (command.Function == "Stop") {
-					break;
-				}
-
-				// Call the appropriate function based on the command
-				ExecuteCommand(command);
-
-				ms.SetLength(0); // Clear the MemoryStream for reuse
-			} catch (IOException) {
-				// Handle the error: the client disconnected
-				Console.WriteLine("Client disconnected. Waiting for a new connection...");
-			} catch (Exception ex) {
-				// Handle other potential exceptions
-				Console.WriteLine($"An error occurred: {ex.Message}");
-			}
+	static bool MainLoop() {
+		// If RoR2 ends, we end
+		if (!IsGameRunning()) {
+			return false;
 		}
 
-		SteamClient.Shutdown();
+		try {
+			using var pipeServer = new NamedPipeServerStream(PIPE_NAME);
+			Console.WriteLine("Waiting for connection...");
+			pipeServer.WaitForConnection();
+
+			var command = ReadCommand(pipeServer);
+
+			if (command.Function == "Stop") {
+				return false;
+			}
+
+			ExecuteCommand(command);
+		} catch (IOException) {
+			Console.WriteLine("Client disconnected!");
+		} catch (JsonException jsonEx) {
+			Console.WriteLine($"Error parsing command: {jsonEx.Message}");
+		} catch (Exception ex) {
+			Console.WriteLine($"An error occurred: {ex.Message}");
+		}
+
+		return true;
+	}
+
+	// Check if the game process is running
+	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
+
+	static SteamTimelineCommand ReadCommand(NamedPipeServerStream pipeServer) {
+		using var ms = new MemoryStream();
+		pipeServer.CopyTo(ms);
+		byte[] receivedData = ms.ToArray();
+
+		// Check if the received data is valid
+		if (receivedData.Length == 0) {
+			throw new InvalidOperationException("Received empty data from pipe.");
+		}
+
+		Console.WriteLine("Processing command");
+		string jsonReceived = System.Text.Encoding.UTF8.GetString(receivedData);
+
+		// Deserialize the command, throwing an exception if deserialization fails
+		return JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
 	}
 
 	static void ExecuteCommand(SteamTimelineCommand command) {
@@ -74,11 +83,9 @@ public class SteamHelper {
 					(float)(double)command.Arguments[1]
 				);
 				break;
-
 			case "ClearTimelineStateDescription":
 				SteamTimeline.ClearTimelineStateDescription((float)(double)command.Arguments[0]);
 				break;
-
 			case "AddTimelineEvent":
 				SteamTimeline.AddTimelineEvent(
 					(string)command.Arguments[0],
@@ -90,9 +97,11 @@ public class SteamHelper {
 					(TimelineEventClipPriority)(int)(long)command.Arguments[6]
 				);
 				break;
-
 			case "SetTimelineGameMode":
 				SteamTimeline.SetTimelineGameMode((TimelineGameMode)(int)(long)command.Arguments[0]);
+				break;
+			default:
+				Console.WriteLine($"Unknown command: {command.Function}");
 				break;
 		}
 	}
