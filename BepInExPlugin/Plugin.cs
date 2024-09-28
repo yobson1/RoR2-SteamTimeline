@@ -122,14 +122,14 @@ public class Plugin : BaseUnityPlugin
         };
 
         // Track player death
-        On.RoR2.CharacterMaster.OnBodyDeath += (orig, self, masterbody) =>
+        On.RoR2.CharacterMaster.OnBodyDeath += (orig, self, characterBody) =>
         {
-            orig(self, masterbody);
-            if (masterbody.isLocalPlayer)
+            orig(self, characterBody);
+            if (characterBody.isLocalPlayer)
                 SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", "You died", 2, 0f, 12f, TimelineEventClipPriority.Featured);
-            else if (masterbody.master && masterbody.master.playerCharacterMasterController)
+            else if (characterBody.master && characterBody.master.playerCharacterMasterController)
             {
-                NetworkUser netUser = masterbody.master.playerCharacterMasterController.networkUser;
+                NetworkUser netUser = characterBody.master.playerCharacterMasterController.networkUser;
                 if (netUser)
                     SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", $"{netUser.userName} died", 1, 0f, 12f, TimelineEventClipPriority.Standard);
             }
