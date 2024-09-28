@@ -36,6 +36,8 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
+
     <ItemGroup>
       <MySourceFiles Include="$(OutputPath)*.dll"/>
     </ItemGroup>
