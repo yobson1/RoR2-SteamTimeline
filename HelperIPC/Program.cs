@@ -6,34 +6,44 @@ using Steamworks;
 using SteamTimelineShared;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HelperIPC;
 
 public class SteamHelper {
 	private const uint APP_ID = 632360;
-	private const string PIPE_NAME = "SteamworksPipe";
 	private const string PROCESS_NAME = "Risk of Rain 2";
 
-	static void Main(string[] args) {
+	static async Task Main(string[] args) {
 		try {
 			SteamClient.Init(APP_ID);
-			while (MainLoop()) { }
+			while (await MainLoop()) { }
 		} finally {
 			// Ensure SteamClient is always shut down properly
 			SteamClient.Shutdown();
 		}
 	}
 
-	static bool MainLoop() {
+	/// <returns><c>true</c> if the loop should continue; <c>false</c> otherwise</returns>
+	static async Task<bool> MainLoop() {
 		// If RoR2 ends, we end
 		if (!IsGameRunning()) {
 			return false;
 		}
 
 		try {
-			using var pipeServer = new NamedPipeServerStream(PIPE_NAME);
+			using var pipeServer = new NamedPipeServerStream(TimelineConsts.PIPE_NAME, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+
 			Console.WriteLine("Waiting for connection...");
-			pipeServer.WaitForConnection();
+			var connectionTask = pipeServer.WaitForConnectionAsync();
+
+			// Check if the game is running while we wait for the connection
+			while (!connectionTask.IsCompleted) {
+				if (!IsGameRunning()) {
+					return false;
+				}
+				await Task.Delay(1000);
+			}
 
 			var command = ReadCommand(pipeServer);
 
@@ -53,7 +63,6 @@ public class SteamHelper {
 		return true;
 	}
 
-	// Check if the game process is running
 	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
 
 	static SteamTimelineCommand ReadCommand(NamedPipeServerStream pipeServer) {
@@ -76,6 +85,7 @@ public class SteamHelper {
 	static void ExecuteCommand(SteamTimelineCommand command) {
 		Console.WriteLine($"Received command: {command.Function} with arguments: {string.Join(", ", command.Arguments)}");
 
+		// https://partner.steamgames.com/doc/api/ISteamTimeline
 		switch (command.Function) {
 			case "SetTimelineStateDescription":
 				SteamTimeline.SetTimelineStateDescription(

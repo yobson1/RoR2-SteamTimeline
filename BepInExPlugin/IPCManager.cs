@@ -50,7 +50,7 @@ internal class IPCManager {
 		Plugin.Logger.LogInfo($"Sending command: {jsonCommand}");
 		byte[] serializedCommand = System.Text.Encoding.UTF8.GetBytes(jsonCommand);
 
-		using NamedPipeClientStream pipeClient = new("SteamworksPipe");
+		using var pipeClient = new NamedPipeClientStream(".", TimelineConsts.PIPE_NAME, PipeDirection.Out);
 		pipeClient.Connect();
 		pipeClient.Write(serializedCommand, 0, serializedCommand.Length);
 	}
