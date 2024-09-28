@@ -35,7 +35,7 @@
     <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Computername)'=='4uYZy1oevQ'">
     <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
 
     <ItemGroup>
@@ -45,5 +45,11 @@
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(ModPath)"
           SkipUnchangedFiles="true" />
+
+    <Exec Command="if not exist ..\package mkdir ..\package" />
+
+    <Copy SourceFiles="@(MySourceFiles)"
+          DestinationFolder="..\package"
+          SkipUnchangedFiles="false" />
   </Target>
 </Project>

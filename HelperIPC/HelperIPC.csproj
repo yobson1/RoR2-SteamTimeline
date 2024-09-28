@@ -25,7 +25,7 @@
     <HelperPath>$(ModPath)Helper\</HelperPath>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Computername)'=='4uYZy1oevQ'">
     <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
 
     <ItemGroup>
@@ -35,5 +35,14 @@
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(HelperPath)"
           SkipUnchangedFiles="true" />
+
+    <Exec Command="if not exist ..\package\Helper mkdir ..\package\Helper" />
+
+    <Copy SourceFiles="@(MySourceFiles)"
+          DestinationFolder="..\package\Helper"
+          SkipUnchangedFiles="false" />
+
+    <Exec Command="jq &quot;.version_number = \&quot;$(Version)\&quot; | .name = \&quot;$(Product)\&quot;&quot; ..\manifest.json > ..\package\manifest.json" />
+    <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;" />
   </Target>
 </Project>
