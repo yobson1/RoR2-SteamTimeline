@@ -1,11 +1,12 @@
 <Project>
   <PropertyGroup>
-    <!-- The R2modman profile to install the built mod to -->
-    <ProfileName>Dev</ProfileName>
-
     <Version>1.0.0</Version>
     <Product>SteamTimelines</Product>
     <Authors>yobson</Authors>
     <ModPath>$([System.Environment]::GetFolderPath(SpecialFolder.ApplicationData))\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
   </PropertyGroup>
+
+	<Target Name="PreBuildMessage" AfterTargets="PreBuildEvent" Condition="'$(ProfileName)'!=''">
+		<Message Text="Installing to profile $(ProfileName) - $(ModPath)" Importance="High" />
+	</Target>
 </Project>

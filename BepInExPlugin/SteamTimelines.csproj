@@ -35,7 +35,7 @@
     <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Computername)'=='4uYZy1oevQ'">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(ProfileName)'!=''">
     <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
 
     <ItemGroup>

@@ -25,7 +25,7 @@
     <HelperPath>$(ModPath)Helper\</HelperPath>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Computername)'=='4uYZy1oevQ'">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(ProfileName)'!=''">
     <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
 
     <ItemGroup>
