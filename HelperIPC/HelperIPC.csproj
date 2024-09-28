@@ -36,6 +36,9 @@
           DestinationFolder="$(HelperPath)"
           SkipUnchangedFiles="true" />
 
+  </Target>
+
+  <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release' AND '$(Computername)'=='4uYZy1oevQ'">
     <Exec Command="if not exist ..\package\Helper mkdir ..\package\Helper" />
 
     <Copy SourceFiles="@(MySourceFiles)"
