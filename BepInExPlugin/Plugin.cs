@@ -45,6 +45,7 @@ public class Plugin : BaseUnityPlugin
 
             var gameModeName = GetGamemodeName(self.gameModeIndex);
 
+            SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Playing);
             SendSteamTimelineCommand("AddTimelineEvent", "steam_timer", "Run Started", $"You started a new {gameModeName} run", 0, 0f, 0f, TimelineEventClipPriority.None);
             if ((int)self.gameModeIndex == 4) // Simulacrum
             {
