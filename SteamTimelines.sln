@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamTimelines", "BepInExPlugin\SteamTimelines.csproj", "{B40E8047-8888-4657-AA17-1C185312FA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamTimeline", "BepInExPlugin\SteamTimeline.csproj", "{B40E8047-8888-4657-AA17-1C185312FA28}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelperIPC", "HelperIPC\HelperIPC.csproj", "{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamworksHelper", "SteamworksHelper\SteamworksHelper.csproj", "{4E01B76C-BDDE-4E7E-AEAB-3CE22C39A5FE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B40E8047-8888-4657-AA17-1C185312FA28} = {B40E8047-8888-4657-AA17-1C185312FA28}
 	EndProjectSection

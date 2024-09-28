@@ -1,4 +1,4 @@
-# RoR2-SteamTimelines
+# RoR2-SteamTimeline
 
 ## Building
 `dotnet build`

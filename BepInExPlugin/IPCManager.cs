@@ -6,14 +6,14 @@ using SteamTimelineShared;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace SteamTimelines;
+namespace SteamTimeline;
 
 internal class IPCManager {
 	private Process _helperProcess;
 
 	internal void StartHelperProcess() {
 		string thisPluginPath = Path.Combine(Paths.PluginPath, MyPluginInfo.PLUGIN_GUID.Replace(".", "-"));
-		string helperPath = Path.Combine(thisPluginPath, "Helper", "HelperIPC.exe");
+		string helperPath = Path.Combine(thisPluginPath, "Helper", "SteamworksHelper.exe");
 
 		_helperProcess = new Process {
 			StartInfo = new ProcessStartInfo {

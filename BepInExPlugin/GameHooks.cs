@@ -2,7 +2,7 @@ using Steamworks;
 using RoR2;
 using UnityEngine.SceneManagement;
 
-namespace SteamTimelines;
+namespace SteamTimeline;
 
 internal class GameHooks {
 	private readonly IPCManager _ipcManager;

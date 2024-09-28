@@ -1,7 +1,7 @@
 {
   "name": "",
   "version_number": "",
-  "website_url": "https://github.com/yobson1/RoR2-SteamTimelines",
+  "website_url": "https://github.com/yobson1/RoR2-SteamTimeline",
   "description": "Integrates Steam timeline events when using Steam's recording feature",
   "dependencies": [
     "bbepis-BepInExPack-5.4.2117",
