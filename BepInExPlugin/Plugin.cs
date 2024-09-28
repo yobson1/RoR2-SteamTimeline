@@ -88,7 +88,7 @@ public class Plugin : BaseUnityPlugin
             }
             else
             {
-                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Run Lost", $"You lost!", 3, 0f, 12f, TimelineEventClipPriority.Standard);
+                SendSteamTimelineCommand("AddTimelineEvent", "steam_x", "Run Lost", "You lost!", 3, 1f, 12f, TimelineEventClipPriority.Standard);
             }
             Logger.LogInfo($"gameEnding: {runReport.gameEnding._cachedName}");
         };
@@ -125,14 +125,13 @@ public class Plugin : BaseUnityPlugin
         On.RoR2.CharacterMaster.OnBodyDeath += (orig, self, characterBody) =>
         {
             orig(self, characterBody);
-            if (characterBody.isLocalPlayer)
+            if (!characterBody.master || !characterBody.master.playerCharacterMasterController) return;
+            NetworkUser netUser = characterBody.master.playerCharacterMasterController.networkUser;
+            if (!netUser) return;
+            if (netUser.isLocalPlayer)
                 SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", "You died", 2, 0f, 12f, TimelineEventClipPriority.Featured);
-            else if (characterBody.master && characterBody.master.playerCharacterMasterController)
-            {
-                NetworkUser netUser = characterBody.master.playerCharacterMasterController.networkUser;
-                if (netUser)
-                    SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", $"{netUser.userName} died", 1, 0f, 12f, TimelineEventClipPriority.Standard);
-            }
+            else
+                SendSteamTimelineCommand("AddTimelineEvent", "steam_death", "Death", $"{netUser.userName} died", 1, 0f, 12f, TimelineEventClipPriority.Standard);
         };
 
         // Track teleporter activation
