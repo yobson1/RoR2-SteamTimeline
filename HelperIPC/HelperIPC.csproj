@@ -29,7 +29,7 @@
     <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
 
     <ItemGroup>
-      <MySourceFiles Include="$(OutputPath)*.dll;$(OutputPath)*.exe"/>
+      <MySourceFiles Include="$(OutputPath)*.dll;$(OutputPath)*.exe;$(OutputPath)*.json;../lib/steam_api64.dll"/>
     </ItemGroup>
 
     <Copy SourceFiles="@(MySourceFiles)"
