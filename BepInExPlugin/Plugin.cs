@@ -7,6 +7,7 @@ using SteamTimelineShared;
 using Newtonsoft.Json;
 using RoR2;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SteamTimelines;
 
@@ -150,41 +151,61 @@ public class Plugin : BaseUnityPlugin
             orig(self, scene);
 
             Logger.LogInfo($"Scene changed to : {scene.name}");
-            switch (scene.name)
-            {
-                case "title":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
-                    SendSteamTimelineCommand("ClearTimelineStateDescription", 0f);
-                    break;
-                case "lobby":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Staging);
-                    break;
-                case "crystalworld":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
-                    break;
-                case "eclipseworld":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
-                    break;
-                case "infinitetowerworld":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
-                    break;
-                case "intro":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
-                    break;
-                case "loadingbasic":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
-                    break;
-                case "logbook":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
-                    break;
-                case "splash":
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
-                    break;
-                default:
-                    SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Playing);
-                    break;
-            }
+            SetTimelineGamemodeByScene(scene.name);
         };
+    }
+
+    private void SetTimelineGamemodeByScene(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "title":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+                SendSteamTimelineCommand("ClearTimelineStateDescription", 0f);
+                break;
+            case "lobby":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Staging);
+                break;
+            case "crystalworld":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+                break;
+            case "eclipseworld":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+                break;
+            case "infinitetowerworld":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+                break;
+            case "intro":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
+                break;
+            case "loadingbasic":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
+                break;
+            case "logbook":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+                break;
+            case "splash":
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.LoadingScreen);
+                break;
+            default:
+                SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Playing);
+                break;
+        }
+    }
+
+    private bool wasPaused = false;
+    private void Update()
+    {
+        if (PauseManager.isPaused && !wasPaused)
+        {
+            wasPaused = true;
+            SendSteamTimelineCommand("SetTimelineGameMode", (int)TimelineGameMode.Menus);
+        }
+        else if (!PauseManager.isPaused && wasPaused)
+        {
+            wasPaused = false;
+            SetTimelineGamemodeByScene(SceneManager.GetActiveScene().name); // They can pause in the lobby too
+        }
     }
 
     private void StartHelperProcess(string helperPath)
