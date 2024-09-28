@@ -15,6 +15,11 @@ public class Plugin : BaseUnityPlugin
     internal static new ManualLogSource Logger;
     private Process helperProcess;
 
+    private string GetGamemodeName(GameModeIndex gameModeIndex)
+    {
+        return Language.GetString(GameModeCatalog.GetGameModePrefabComponent(gameModeIndex).nameToken);
+    }
+
     private void Awake()
     {
         Logger = base.Logger;
@@ -35,8 +40,20 @@ public class Plugin : BaseUnityPlugin
         On.RoR2.Run.Start += (orig, self) =>
         {
             orig(self);
-            SendSteamTimelineCommand("AddTimelineEvent", "steam_timer", "Run Started", "You started a new run", 0, 0f, 0f, TimelineEventClipPriority.None);
-            SendSteamTimelineCommand("SetTimelineStateDescription", $"Stage 1", 0f);
+
+            var gameModeName = GetGamemodeName(self.gameModeIndex);
+
+            SendSteamTimelineCommand("AddTimelineEvent", "steam_timer", "Run Started", $"You started a new {gameModeName} run", 0, 0f, 0f, TimelineEventClipPriority.None);
+            if ((int)self.gameModeIndex == 4) // Simulacrum
+            {
+                SendSteamTimelineCommand("SetTimelineStateDescription", $"{gameModeName} - Wave 0", 0f);
+            }
+            else
+            {
+                SendSteamTimelineCommand("SetTimelineStateDescription", $"{gameModeName} - Stage 1", 0f);
+            }
+
+            Logger.LogInfo($"Starting new run: {self.gameModeIndex} - {gameModeName}");
         };
 
         // Track run end
@@ -59,7 +76,7 @@ public class Plugin : BaseUnityPlugin
                         SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You obliterated at the Obelisk!", 3, 0f, 0f, TimelineEventClipPriority.None);
                         break;
                     case "RebirthEndingDef":
-                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated the False Son and were reborn!", 3, 0f, 0f, TimelineEventClipPriority.None);
+                        SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", "You deafeated the False Son and were reborn!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
                         break;
                     default:
                         SendSteamTimelineCommand("AddTimelineEvent", "steam_crown", "Run Won", $"You won!", 3, 0f, 12f, TimelineEventClipPriority.Featured);
@@ -78,12 +95,20 @@ public class Plugin : BaseUnityPlugin
         {
             orig(self, stage);
 
-            if (stage.stageOrder > 1)
-            {
-                var currentStage = Run.instance.stageClearCount + 1;
-                SendSteamTimelineCommand("AddTimelineEvent", "steam_flag", $"Stage {currentStage}", $"You reached stage {currentStage}", 0, 0f, 0f, TimelineEventClipPriority.None);
-                SendSteamTimelineCommand("SetTimelineStateDescription", $"Stage {currentStage}", 0f);
-            }
+            var gameModeName = GetGamemodeName(self.gameModeIndex);
+
+            var currentStage = Run.instance.stageClearCount + 1;
+            SendSteamTimelineCommand("AddTimelineEvent", "steam_flag", $"Stage {currentStage}", $"You reached stage {currentStage}", 0, 0f, 0f, TimelineEventClipPriority.None);
+            SendSteamTimelineCommand("SetTimelineStateDescription", $"{gameModeName} - Stage {currentStage}", 0f);
+        };
+
+        // Track wave advances
+        On.RoR2.InfiniteTowerRun.AdvanceWave += (orig, self) =>
+        {
+            orig(self);
+            var wave = self.waveIndex;
+            SendSteamTimelineCommand("AddTimelineEvent", "steam_combat", $"Wave {wave}", $"You reached wave {wave}", 0, 0f, 0f, TimelineEventClipPriority.None);
+            SendSteamTimelineCommand("SetTimelineStateDescription", $"Simulacrum - Wave {wave}", 0f);
         };
 
         // Track boss kill
