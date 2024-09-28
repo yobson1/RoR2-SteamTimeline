@@ -30,15 +30,19 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <ModPath>%AppData%\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+    <ModPath>$([System.Environment]::GetFolderPath(SpecialFolder.ApplicationData))\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+    <HelperPath>$(ModPath)Helper\</HelperPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist $(ModPath)Helper mkdir $(ModPath)Helper" />
-    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).exe&quot; &quot;$(ModPath)Helper\$(AssemblyName).exe&quot;" />
-    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll&quot; &quot;$(ModPath)Helper\$(AssemblyName).dll&quot;" />
-    <Exec Command="copy /y &quot;..\lib\steam_api64.dll&quot; &quot;$(ModPath)Helper\steam_api64.dll&quot;" />
-    <Exec Command="copy /y &quot;..\lib\$(TargetFramework)\Facepunch.Steamworks.Win64.dll&quot; &quot;$(ModPath)Helper\Facepunch.Steamworks.Win64.dll&quot;" />
-    <Exec Command="copy /y &quot;..\SteamTimelineShared\bin\$(Configuration)\$(TargetFramework)\SteamTimelineShared.dll&quot; &quot;$(ModPath)Helper\SteamTimelineShared.dll&quot;" />
+    <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
+
+    <ItemGroup>
+      <MySourceFiles Include="$(OutputPath)*.dll;$(OutputPath)*.exe"/>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(MySourceFiles)"
+          DestinationFolder="$(HelperPath)"
+          SkipUnchangedFiles="true" />
   </Target>
 </Project>

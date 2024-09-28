@@ -44,13 +44,16 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <ModPath>%AppData%\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+    <ModPath>$([System.Environment]::GetFolderPath(SpecialFolder.ApplicationData))\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
-    <Exec Command="copy /y &quot;.\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll&quot; &quot;$(ModPath)$(AssemblyName).dll&quot;" />
-    <Exec Command="copy /y &quot;..\lib\$(TargetFramework)\Facepunch.Steamworks.Win64.dll&quot; &quot;$(ModPath)Facepunch.Steamworks.Win64.dll&quot;" />
-    <Exec Command="copy /y &quot;..\SteamTimelineShared\bin\$(Configuration)\$(TargetFramework)\SteamTimelineShared.dll&quot; &quot;$(ModPath)SteamTimelineShared.dll&quot;" />
+    <ItemGroup>
+      <MySourceFiles Include="$(OutputPath)*.dll"/>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(MySourceFiles)"
+          DestinationFolder="$(ModPath)"
+          SkipUnchangedFiles="true" />
   </Target>
 </Project>
