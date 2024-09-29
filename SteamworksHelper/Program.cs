@@ -38,22 +38,19 @@ public class SteamHelper {
 
 			Console.WriteLine("Waiting for connection...");
 			var connectionTask = pipeServer.WaitForConnectionAsync();
+			var waitTask = Task.Delay(1000);
 
-			// Check if the game is running while we wait for the connection
-			while (!connectionTask.IsCompleted) {
-				if (!IsGameRunning()) {
+			var completedTask = await Task.WhenAny(connectionTask, waitTask);
+
+			if (completedTask == connectionTask) {
+				var command = ReadCommand(pipeServer);
+				if (command.Function == "Stop") {
 					return false;
 				}
-				await Task.Delay(1000);
+				ExecuteCommand(command);
 			}
-
-			var command = ReadCommand(pipeServer);
-
-			if (command.Function == "Stop") {
-				return false;
-			}
-
-			ExecuteCommand(command);
+			// If we get here we timed out and can loop again
+			// to check if RoR2 is still running
 		} catch (IOException) {
 			Console.WriteLine("Client disconnected!");
 		} catch (JsonException jsonEx) {
