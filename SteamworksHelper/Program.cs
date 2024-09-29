@@ -10,46 +10,36 @@ using System.Threading.Tasks;
 
 namespace SteamworksHelper;
 
-public class SteamHelper
-{
+public class SteamHelper {
 	private const uint APP_ID = 632360;
 	private const string PROCESS_NAME = "Risk of Rain 2";
 
-	static async Task Main(string[] args)
-	{
-		try
-		{
+	static async Task Main(string[] args) {
+		try {
 			SteamClient.Init(APP_ID);
 			while (await MainLoop()) { }
-		}
-		finally
-		{
+		} finally {
 			// Ensure SteamClient is always shut down properly
 			SteamClient.Shutdown();
 		}
 	}
 
 	/// <returns><c>true</c> if the loop should continue; <c>false</c> otherwise</returns>
-	static async Task<bool> MainLoop()
-	{
+	static async Task<bool> MainLoop() {
 		// If RoR2 ends, we end
-		if (!IsGameRunning())
-		{
+		if (!IsGameRunning()) {
 			return false;
 		}
 
-		try
-		{
+		try {
 			using var pipeServer = new NamedPipeServerStream(TimelineConsts.PIPE_NAME, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
 
 			Console.WriteLine("Waiting for connection...");
 			var connectionTask = pipeServer.WaitForConnectionAsync();
 
 			// Check if the game is running while we wait for the connection
-			while (!connectionTask.IsCompleted)
-			{
-				if (!IsGameRunning())
-				{
+			while (!connectionTask.IsCompleted) {
+				if (!IsGameRunning()) {
 					return false;
 				}
 				await Task.Delay(1000);
@@ -57,23 +47,16 @@ public class SteamHelper
 
 			var command = ReadCommand(pipeServer);
 
-			if (command.Function == "Stop")
-			{
+			if (command.Function == "Stop") {
 				return false;
 			}
 
 			ExecuteCommand(command);
-		}
-		catch (IOException)
-		{
+		} catch (IOException) {
 			Console.WriteLine("Client disconnected!");
-		}
-		catch (JsonException jsonEx)
-		{
+		} catch (JsonException jsonEx) {
 			Console.WriteLine($"Error parsing command: {jsonEx.Message}");
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			Console.WriteLine($"An error occurred: {ex.Message}");
 		}
 
@@ -82,15 +65,13 @@ public class SteamHelper
 
 	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
 
-	static SteamTimelineCommand ReadCommand(NamedPipeServerStream pipeServer)
-	{
+	static SteamTimelineCommand ReadCommand(NamedPipeServerStream pipeServer) {
 		using var ms = new MemoryStream();
 		pipeServer.CopyTo(ms);
 		byte[] receivedData = ms.ToArray();
 
 		// Check if the received data is valid
-		if (receivedData.Length == 0)
-		{
+		if (receivedData.Length == 0) {
 			throw new InvalidOperationException("Received empty data from pipe.");
 		}
 
@@ -101,13 +82,11 @@ public class SteamHelper
 		return JsonConvert.DeserializeObject<SteamTimelineCommand>(jsonReceived);
 	}
 
-	static void ExecuteCommand(SteamTimelineCommand command)
-	{
+	static void ExecuteCommand(SteamTimelineCommand command) {
 		Console.WriteLine($"Received command: {command.Function} with arguments: {string.Join(", ", command.Arguments)}");
 
 		// https://partner.steamgames.com/doc/api/ISteamTimeline
-		switch (command.Function)
-		{
+		switch (command.Function) {
 			case "SetTimelineStateDescription":
 				SteamTimeline.SetTimelineStateDescription(
 					(string)command.Arguments[0],
