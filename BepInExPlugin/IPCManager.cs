@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace SteamTimeline;
 
-internal class IPCManager {
-	private Process _helperProcess;
+internal static class IPCManager {
+	private static Process s_helperProcess;
 
-	internal void StartHelperProcess() {
+	internal static void StartHelperProcess() {
 		string thisPluginPath = Path.Combine(Paths.PluginPath, MyPluginInfo.PLUGIN_GUID.Replace(".", "-"));
 		string helperPath = Path.Combine(thisPluginPath, "Helper", "SteamworksHelper.exe");
 
-		_helperProcess = new Process {
+		s_helperProcess = new Process {
 			StartInfo = new ProcessStartInfo {
 				FileName = helperPath,
 				UseShellExecute = false,
@@ -27,20 +27,20 @@ internal class IPCManager {
 #endif
 			}
 		};
-		_helperProcess.Start();
-		_helperProcess.EnableRaisingEvents = true;
-		_helperProcess.Exited += (s, e) => Application.Quit();
+		s_helperProcess.Start();
+		s_helperProcess.EnableRaisingEvents = true;
+		s_helperProcess.Exited += (s, e) => Application.Quit();
 	}
 
-	internal void StopHelperProcess() {
-		if (_helperProcess != null && !_helperProcess.HasExited) {
+	internal static void StopHelperProcess() {
+		if (s_helperProcess != null && !s_helperProcess.HasExited) {
 			SendSteamTimelineCommand("Stop");
-			_helperProcess.WaitForExit();
-			_helperProcess.Dispose();
+			s_helperProcess.WaitForExit();
+			s_helperProcess.Dispose();
 		}
 	}
 
-	internal void SendSteamTimelineCommand(string functionName, params object[] args) {
+	internal static void SendSteamTimelineCommand(string functionName, params object[] args) {
 		var command = new SteamTimelineCommand {
 			Function = functionName,
 			Arguments = args

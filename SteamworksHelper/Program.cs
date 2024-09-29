@@ -14,6 +14,8 @@ public class SteamHelper {
 	private const uint APP_ID = 632360;
 	private const string PROCESS_NAME = "Risk of Rain 2";
 
+	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
+
 	static async Task Main(string[] args) {
 		try {
 			SteamClient.Init(APP_ID);
@@ -63,8 +65,6 @@ public class SteamHelper {
 		return true;
 	}
 
-	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
-
 	static SteamTimelineCommand ReadCommand(NamedPipeServerStream pipeServer) {
 		using var ms = new MemoryStream();
 		pipeServer.CopyTo(ms);
@@ -104,11 +104,11 @@ public class SteamHelper {
 					(uint)(long)command.Arguments[3],
 					(float)(double)command.Arguments[4],
 					(float)(double)command.Arguments[5],
-					(TimelineEventClipPriority)(int)(long)command.Arguments[6]
+					(TimelineEventClipPriority)(long)command.Arguments[6]
 				);
 				break;
 			case "SetTimelineGameMode":
-				SteamTimeline.SetTimelineGameMode((TimelineGameMode)(int)(long)command.Arguments[0]);
+				SteamTimeline.SetTimelineGameMode((TimelineGameMode)(long)command.Arguments[0]);
 				break;
 			default:
 				Console.WriteLine($"Unknown command: {command.Function}");
