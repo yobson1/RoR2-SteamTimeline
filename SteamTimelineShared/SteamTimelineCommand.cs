@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace SteamTimelineShared;
+﻿namespace SteamTimelineShared;
 
 public static class TimelineConsts {
 	public const string PIPE_NAME = "SteamworksPipe";
