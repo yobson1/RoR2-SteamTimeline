@@ -5,6 +5,7 @@
     <AssemblyName>$(Authors).$(Product)</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <RestoreAdditionalProjectSources>
       https://api.nuget.org/v3/index.json;
       https://nuget.bepinex.dev/v3/index.json;

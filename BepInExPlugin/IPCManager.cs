@@ -9,7 +9,7 @@ using UnityEngine;
 namespace SteamTimeline;
 
 internal static class IPCManager {
-	private static Process s_helperProcess;
+	private static Process? s_helperProcess;
 
 	internal static void StartHelperProcess() {
 		string thisPluginPath = Path.Combine(Paths.PluginPath, MyPluginInfo.PLUGIN_GUID.Replace(".", "-"));
@@ -47,7 +47,7 @@ internal static class IPCManager {
 		};
 
 		string jsonCommand = JsonConvert.SerializeObject(command);
-		Plugin.Logger.LogInfo($"Sending command: {jsonCommand}");
+		Plugin.Logger!.LogInfo($"Sending command: {jsonCommand}");
 		byte[] serializedCommand = System.Text.Encoding.UTF8.GetBytes(jsonCommand);
 
 		using var pipeClient = new NamedPipeClientStream(".", TimelineConsts.PIPE_NAME, PipeDirection.Out);

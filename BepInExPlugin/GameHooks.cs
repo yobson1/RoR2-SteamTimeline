@@ -18,7 +18,7 @@ internal static class GameHooks {
 	}
 
 	private static void OnSteamworksLoaded() {
-		Plugin.Logger.LogInfo("RoR2 Steamworks loaded");
+		Plugin.Logger!.LogInfo("RoR2 Steamworks loaded");
 		Timeline.SetTimelineGameMode(TimelineGameMode.LoadingScreen);
 	}
 
@@ -38,7 +38,7 @@ internal static class GameHooks {
 			Timeline.SetTimelineStateDescription($"{gameModeName} - Stage 1", 0f);
 		}
 
-		Plugin.Logger.LogInfo($"Starting new run: {self.gameModeIndex} - {gameModeName}");
+		Plugin.Logger!.LogInfo($"Starting new run: {self.gameModeIndex} - {gameModeName}");
 	}
 
 	private static void OnRunEnd(On.RoR2.Run.orig_OnClientGameOver orig, Run self, RunReport runReport) {
@@ -50,7 +50,7 @@ internal static class GameHooks {
 		} else {
 			Timeline.AddTimelineEvent("steam_x", "Run Lost", "You lost!", 1, 1f, 0f, TimelineEventClipPriority.Standard);
 		}
-		Plugin.Logger.LogInfo($"gameEnding: {runReport.gameEnding._cachedName}");
+		Plugin.Logger!.LogInfo($"gameEnding: {runReport.gameEnding._cachedName}");
 	}
 
 	private static void HandleWinCondition(string endingName) {
@@ -108,7 +108,7 @@ internal static class GameHooks {
 
 	private static void OnTeleporterActivated(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor interactor) {
 		orig(self, interactor);
-		Plugin.Logger.LogInfo($"Teleporter activated: {self.activationState}");
+		Plugin.Logger!.LogInfo($"Teleporter activated: {self.activationState}");
 		if (self.activationState == TeleporterInteraction.ActivationState.Idle) {
 			Timeline.AddTimelineEvent("steam_effect", "Teleporter activated", "The teleporter was activated", 0, 0f, 0f, TimelineEventClipPriority.None);
 		}
@@ -116,7 +116,7 @@ internal static class GameHooks {
 
 	private static void OnSceneChanged(On.RoR2.SceneCatalog.orig_OnActiveSceneChanged orig, Scene self, Scene newScene) {
 		orig(self, newScene);
-		Plugin.Logger.LogInfo($"Scene changed to : {newScene.name}");
+		Plugin.Logger!.LogInfo($"Scene changed to : {newScene.name}");
 		SetTimelineGamemodeByScene(newScene.name);
 	}
 

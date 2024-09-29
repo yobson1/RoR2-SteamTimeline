@@ -8,7 +8,7 @@ namespace SteamTimeline;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin {
-	internal static new ManualLogSource Logger;
+	internal static new ManualLogSource? Logger;
 	private bool _wasPaused = false;
 
 	private void Awake() {
