@@ -1,7 +1,3 @@
-using IL.RoR2;
-
-using SteamTimelineShared;
-
 using Steamworks;
 
 namespace SteamTimeline;
