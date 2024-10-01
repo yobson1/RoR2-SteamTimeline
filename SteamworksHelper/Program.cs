@@ -17,7 +17,7 @@ public class SteamHelper {
 	static bool IsGameRunning() => Process.GetProcessesByName(PROCESS_NAME).Any();
 
 	static async Task Main(string[] args) {
-		Console.WriteLine($"SteamworksHelper v{VersionInfo.VERSION}-{VersionInfo.GIT_HASH}");
+		Console.WriteLine($"SteamworksHelper v{VersionInfo.VERSION}-{VersionInfo.GIT_HASH} {VersionInfo.BUILD_DATE}");
 		try {
 			SteamClient.Init(APP_ID);
 			while (await MainLoop()) { }

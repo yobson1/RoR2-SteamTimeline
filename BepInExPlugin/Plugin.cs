@@ -14,7 +14,7 @@ public class Plugin : BaseUnityPlugin {
 
 	private void Awake() {
 		Logger = base.Logger;
-		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} v{VersionInfo.VERSION}-{VersionInfo.GIT_HASH} is loaded!");
+		Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{VersionInfo.VERSION}-{VersionInfo.GIT_HASH} {VersionInfo.BUILD_DATE}");
 
 		IPCManager.StartHelperProcess();
 		GameHooks.SetupHooks();
