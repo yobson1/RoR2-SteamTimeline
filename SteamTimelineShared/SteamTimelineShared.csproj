@@ -10,7 +10,6 @@
     <RootNamespace>SteamTimelineShared</RootNamespace>
   </PropertyGroup>
 
-
   <Target Name="EmbedGitHash" BeforeTargets="BeforeCompile;CoreCompile">
     <PropertyGroup>
       <GitHashFile>$(IntermediateOutputPath)git_hash.txt</GitHashFile>
@@ -28,7 +27,7 @@ namespace $(RootNamespace)
 {
     public static class VersionInfo
     {
-				public const string VERSION = "$(Version)"%3B
+        public const string VERSION = "$(Version)"%3B
         public const string GIT_HASH = "$(GitHash)"%3B
     }
 }
