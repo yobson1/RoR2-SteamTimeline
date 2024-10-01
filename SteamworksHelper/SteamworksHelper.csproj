@@ -8,6 +8,7 @@
     <RestoreAdditionalProjectSources>
       https://api.nuget.org/v3/index.json;
     </RestoreAdditionalProjectSources>
+		<RootNamespace>SteamworksHelper</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

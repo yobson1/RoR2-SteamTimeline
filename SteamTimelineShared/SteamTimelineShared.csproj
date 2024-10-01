@@ -10,37 +10,4 @@
     <RootNamespace>SteamTimelineShared</RootNamespace>
   </PropertyGroup>
 
-  <Target Name="EmbedGitHash" BeforeTargets="BeforeCompile;CoreCompile">
-    <PropertyGroup>
-      <GitHashFile>$(IntermediateOutputPath)git_hash.txt</GitHashFile>
-      <GeneratedFilePath>$(IntermediateOutputPath)GitHash.cs</GeneratedFilePath>
-      <BuildDate>$([System.DateTime]::Now.ToString("ddd, dd MMM yyyy HH:mm:ss"))</BuildDate>
-    </PropertyGroup>
-
-    <Exec Command="git rev-parse --short HEAD &gt; $(GitHashFile)" />
-    <ReadLinesFromFile File="$(GitHashFile)">
-      <Output TaskParameter="Lines" PropertyName="GitHash" />
-    </ReadLinesFromFile>
-
-    <PropertyGroup>
-      <GeneratedCode><![CDATA[
-namespace $(RootNamespace)
-{
-    public static class VersionInfo
-    {
-        public const string VERSION = "$(Version)"%3B
-        public const string GIT_HASH = "$(GitHash)"%3B
-        public const string BUILD_DATE = "$(BuildDate)"%3B
-    }
-}
-      ]]></GeneratedCode>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Include="$(GeneratedFilePath)" />
-      <FileWrites Include="$(GeneratedFilePath)" />
-    </ItemGroup>
-    <WriteLinesToFile Lines="$(GeneratedCode)" File="$(GeneratedFilePath)" WriteOnlyWhenDifferent="true" Overwrite="true" />
-  </Target>
-
 </Project>

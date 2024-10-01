@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using Steamworks;
-using SteamTimelineShared;
 using RoR2;
 using UnityEngine.SceneManagement;
 
