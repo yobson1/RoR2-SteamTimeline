@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using Steamworks;
+using SteamTimelineShared;
 using RoR2;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +14,7 @@ public class Plugin : BaseUnityPlugin {
 
 	private void Awake() {
 		Logger = base.Logger;
-		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} v{VersionInfo.VERSION}-{VersionInfo.GIT_HASH} is loaded!");
 
 		IPCManager.StartHelperProcess();
 		GameHooks.SetupHooks();
