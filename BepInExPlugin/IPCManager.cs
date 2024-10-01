@@ -29,14 +29,22 @@ internal static class IPCManager {
 		};
 		s_helperProcess.Start();
 		s_helperProcess.EnableRaisingEvents = true;
-		s_helperProcess.Exited += (s, e) => Application.Quit();
+		s_helperProcess.Exited += (s, e) => {
+			Plugin.Logger!.LogFatal($"Helper process exited unexpectedly! Exit code: {s_helperProcess.ExitCode}");
+			Application.Quit();
+		};
+
+		Plugin.Logger!.LogInfo("SteamworksHelper started");
 	}
 
 	internal static void StopHelperProcess() {
+		Plugin.Logger!.LogInfo("Stopping SteamworksHelper");
 		if (s_helperProcess != null && !s_helperProcess.HasExited) {
 			SendSteamTimelineCommand("Stop");
 			s_helperProcess.WaitForExit();
 			s_helperProcess.Dispose();
+		} else {
+			Plugin.Logger!.LogWarning("Failed to stop helper: process already exited");
 		}
 	}
 
@@ -47,7 +55,7 @@ internal static class IPCManager {
 		};
 
 		string jsonCommand = JsonConvert.SerializeObject(command);
-		Plugin.Logger!.LogInfo($"Sending command: {jsonCommand}");
+		Plugin.Logger!.LogDebug($"Sending command: {jsonCommand}");
 		byte[] serializedCommand = System.Text.Encoding.UTF8.GetBytes(jsonCommand);
 
 		using var pipeClient = new NamedPipeClientStream(".", TimelineConsts.PIPE_NAME, PipeDirection.Out);
