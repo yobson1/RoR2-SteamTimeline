@@ -26,17 +26,18 @@
     <HelperPath>$(ModPath)Helper\</HelperPath>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(ProfileName)'!=''">
-    <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
-
+  <Target Name="PrepSourceFiles" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <MySourceFiles Include="$(OutputPath)*.dll;$(OutputPath)*.exe;$(OutputPath)*.json;../lib/steam_api64.dll"/>
     </ItemGroup>
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PrepSourceFiles" Condition="'$(ProfileName)'!=''">
+    <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(HelperPath)"
           SkipUnchangedFiles="true" />
-
   </Target>
 
   <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release' AND '$(Computername)'=='4uYZy1oevQ'">

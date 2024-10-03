@@ -36,12 +36,14 @@
     <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(ProfileName)'!=''">
-    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
-
-    <ItemGroup>
+	<Target Name="PrepSourceFiles" AfterTargets="PostBuildEvent">
+		<ItemGroup>
       <MySourceFiles Include="$(OutputPath)*.dll"/>
     </ItemGroup>
+	</Target>
+
+  <Target Name="PostBuild" AfterTargets="PrepSourceFiles" Condition="'$(ProfileName)'!=''">
+    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(ModPath)"
