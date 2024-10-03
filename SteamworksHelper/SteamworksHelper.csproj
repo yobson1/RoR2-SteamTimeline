@@ -50,6 +50,10 @@
           DestinationFiles="..\package\README.md"
           SkipUnchangedFiles="false" />
 
+    <Copy SourceFiles="..\icon.png"
+          DestinationFiles="..\package\icon.png"
+          SkipUnchangedFiles="false" />
+
     <Exec Command="jq &quot;.version_number = \&quot;$(Version)\&quot; | .name = \&quot;$(Product)\&quot;&quot; ..\manifest.json > ..\package\manifest.json" />
     <Exec Command="git-cliff -w .. -o ..\package\CHANGELOG.md" />
     <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;" />
