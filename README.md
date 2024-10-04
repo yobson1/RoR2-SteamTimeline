@@ -16,3 +16,4 @@ dotnet build SteamTimelines.sln -c Debug -p:ProfileName=Dev
 
 ## Acknowledgments
 * **Facepunch.Steamworks** based on https://github.com/Squalive/Facepunch.Steamworks/
+* **Icon art by Gib**: [twitter](https://twitter.com/gibpip) [reddit](https://www.reddit.com/user/Gibbyyuh/)
