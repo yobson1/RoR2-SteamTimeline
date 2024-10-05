@@ -33,15 +33,21 @@
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PrepSourceFiles" Condition="'$(ProfileName)'!=''">
-    <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)" />
+    <Exec Command="if not exist $(HelperPath) mkdir $(HelperPath)"
+          Condition="'$(OS)' == 'Windows_NT'"/>
+    <Exec Command="mkdir -p $(HelperPath)"
+          Condition="'$(OS)' != 'Windows_NT'"/>
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(HelperPath)"
           SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release' AND '$(Computername)'=='4uYZy1oevQ'">
-    <Exec Command="if not exist ..\package\Helper mkdir ..\package\Helper" />
+  <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release'">
+    <Exec Command="if not exist ..\package\Helper mkdir ..\package\Helper"
+          Condition="'$(OS)' == 'Windows_NT'" />
+    <Exec Command="mkdir -p ../package/Helper"
+          Condition="'$(OS)' != 'Windows_NT'" />
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="..\package\Helper"
@@ -55,8 +61,19 @@
           DestinationFiles="..\package\icon.png"
           SkipUnchangedFiles="false" />
 
-    <Exec Command="jq &quot;.version_number = \&quot;$(Version)\&quot; | .name = \&quot;$(Product)\&quot;&quot; ..\manifest.json > ..\package\manifest.json" />
-    <Exec Command="git-cliff -w .. -o ..\package\CHANGELOG.md" />
-    <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;" />
+    <Exec Command="jq &quot;.version_number = \&quot;$(Version)\&quot; | .name = \&quot;$(Product)\&quot;&quot; ..\manifest.json > ..\package\manifest.json"
+          Condition="'$(OS)' == 'Windows_NT'"/>
+    <Exec Command="jq &quot;.version_number = \&quot;$(Version)\&quot; | .name = \&quot;$(Product)\&quot;&quot; ../manifest.json > ../package/manifest.json"
+          Condition="'$(OS)' != 'Windows_NT'" />
+
+    <Exec Command="git-cliff -w .. -o ..\package\CHANGELOG.md"
+          Condition="'$(OS)' == 'Windows_NT'"/>
+    <Exec Command="git-cliff -w .. -o ../package/CHANGELOG.md"
+          Condition="'$(OS)' != 'Windows_NT'"/>
+
+    <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;"
+          Condition="'$(OS)' == 'Windows_NT'" />
+    <Exec Command="zip -r ../package.zip ../package/*"
+          Condition="'$(OS)' != 'Windows_NT'"/>
   </Target>
 </Project>

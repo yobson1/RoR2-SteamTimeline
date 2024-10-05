@@ -36,22 +36,29 @@
     <ProjectReference Include="..\SteamTimelineShared\SteamTimelineShared.csproj" />
   </ItemGroup>
 
-	<Target Name="PrepSourceFiles" AfterTargets="PostBuildEvent">
-		<ItemGroup>
+  <Target Name="PrepSourceFiles" AfterTargets="PostBuildEvent">
+    <ItemGroup>
       <MySourceFiles Include="$(OutputPath)*.dll"/>
     </ItemGroup>
-	</Target>
+  </Target>
 
   <Target Name="PostBuild" AfterTargets="PrepSourceFiles" Condition="'$(ProfileName)'!=''">
-    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)" />
+    <Exec Command="if not exist $(ModPath) mkdir $(ModPath)"
+          Condition="'$(OS)' == 'Windows_NT'"/>
+    <Exec Command="mkdir -p $(ModPath)"
+          Condition="'$(OS)' != 'Windows_NT'"/>
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="$(ModPath)"
           SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release' AND '$(Computername)'=='4uYZy1oevQ'">
-    <Exec Command="if not exist ..\package mkdir ..\package" />
+  <Target Name="PostBuildRelease" AfterTargets="PostBuild" Condition="'$(Configuration)'=='Release'">
+    <Message Text="Package created at $(ModPath)" Importance="High" />
+    <Exec Command="if not exist ..\package mkdir ..\package"
+          Condition="'$(OS)' == 'Windows_NT'" />
+    <Exec Command="mkdir -p ../package"
+          Condition="'$(OS)' != 'Windows_NT'" />
 
     <Copy SourceFiles="@(MySourceFiles)"
           DestinationFolder="..\package"

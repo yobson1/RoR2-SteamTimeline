@@ -4,7 +4,7 @@
     <Version>1.0.0</Version>
     <Product>SteamTimeline</Product>
     <Authors>yobson</Authors>
-    <ModPath>$([System.Environment]::GetFolderPath(SpecialFolder.ApplicationData))\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\Plugins\$(Authors)-$(Product)\</ModPath>
+    <ModPath>$([System.Environment]::GetFolderPath(SpecialFolder.ApplicationData))\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx\plugins\$(Authors)-$(Product)\</ModPath>
   </PropertyGroup>
 
 	<Target Name="PreBuildMessage" AfterTargets="PreBuildEvent" Condition="'$(ProfileName)'!=''">
