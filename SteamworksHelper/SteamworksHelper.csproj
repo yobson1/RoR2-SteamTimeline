@@ -9,6 +9,9 @@
       https://api.nuget.org/v3/index.json;
     </RestoreAdditionalProjectSources>
     <RootNamespace>SteamworksHelper</RootNamespace>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,9 +29,9 @@
     <HelperPath>$(ModPath)Helper\</HelperPath>
   </PropertyGroup>
 
-  <Target Name="PrepSourceFiles" AfterTargets="PostBuildEvent">
+  <Target Name="PrepSourceFiles" AfterTargets="Publish">
     <ItemGroup>
-      <MySourceFiles Include="$(OutputPath)*.dll;$(OutputPath)*.exe;$(OutputPath)*.json;../lib/steam_api64.dll"/>
+      <MySourceFiles Include="$(OutputPath)/publish/*.exe;$(OutputPath)/Facepunch.Steamworks.Win64.dll;../lib/steam_api64.dll;"/>
     </ItemGroup>
   </Target>
 
@@ -73,7 +76,7 @@
 
     <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;"
           Condition="'$(OS)' == 'Windows_NT'" />
-    <Exec Command="zip -r ../package.zip ../package/*"
+    <Exec Command="cd ../package &amp;&amp; rm ../package.zip &amp;&amp; zip -r ../package.zip *"
           Condition="'$(OS)' != 'Windows_NT'"/>
   </Target>
 </Project>
