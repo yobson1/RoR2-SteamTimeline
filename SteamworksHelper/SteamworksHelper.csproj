@@ -76,7 +76,7 @@
 
     <Exec Command="powershell -command &quot;Compress-Archive -Path '..\package\*' -DestinationPath '..\package.zip' -Force&quot;"
           Condition="'$(OS)' == 'Windows_NT'" />
-    <Exec Command="cd ../package &amp;&amp; rm ../package.zip &amp;&amp; zip -r ../package.zip *"
+    <Exec Command="cd ../package &amp;&amp; rm -f ../package.zip &amp;&amp; zip -r ../package.zip *"
           Condition="'$(OS)' != 'Windows_NT'"/>
   </Target>
 </Project>
