@@ -12,7 +12,7 @@ The mod will be automatically packaged if published in release mode.
 ```
 git clone https://github.com/yobson1/RoR2-SteamTimeline.git
 cd RoR2-SteamTimeline
-dotnet build SteamTimelines.sln -c Debug -p:ProfileName=Dev
+dotnet publish SteamTimelines.sln -c Debug -p:ProfileName=Dev
 ```
 
 ## Acknowledgments
