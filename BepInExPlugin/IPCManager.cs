@@ -15,6 +15,11 @@ internal static class IPCManager {
 		string thisPluginPath = Path.Combine(Paths.PluginPath, MyPluginInfo.PLUGIN_GUID.Replace(".", "-"));
 		string helperPath = Path.Combine(thisPluginPath, "Helper", "SteamworksHelper.exe");
 
+		if (!File.Exists(helperPath)) {
+			Plugin.Logger!.LogFatal($"Helper file not found: {helperPath}");
+			return;
+		}
+
 		s_helperProcess = new Process {
 			StartInfo = new ProcessStartInfo {
 				FileName = helperPath,
