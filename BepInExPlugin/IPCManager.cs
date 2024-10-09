@@ -63,8 +63,12 @@ internal static class IPCManager {
 		Plugin.Logger!.LogDebug($"Sending command: {jsonCommand}");
 		byte[] serializedCommand = System.Text.Encoding.UTF8.GetBytes(jsonCommand);
 
-		using var pipeClient = new NamedPipeClientStream(".", TimelineConsts.PIPE_NAME, PipeDirection.Out);
-		pipeClient.Connect();
-		pipeClient.Write(serializedCommand, 0, serializedCommand.Length);
+		try {
+			using var pipeClient = new NamedPipeClientStream(".", TimelineConsts.PIPE_NAME, PipeDirection.Out);
+			pipeClient.Connect();
+			pipeClient.Write(serializedCommand, 0, serializedCommand.Length);
+		} catch (IOException ex) {
+			Plugin.Logger!.LogError($"Failed to connect to pipe: '{TimelineConsts.PIPE_NAME}'\n{ex.Message}'");
+		}
 	}
 }
